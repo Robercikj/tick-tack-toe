@@ -1,13 +1,16 @@
 package com.kodilla.ticktacktoe;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
 public class TickTackToeApplication {
-
     public static void main(String[] args) {
-        SpringApplication.run(TickTackToeApplication.class, args);
+        Board board = new Board();
+
+        // Wyświetlamy początkowy stan planszy
+        System.out.println("Początkowa plansza:");
+        board.showBoard();
+
+
     }
+
 
 }
