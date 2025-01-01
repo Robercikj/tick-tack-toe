@@ -6,9 +6,16 @@ public class Game {
     private Board board;
     private char whoseMove = 'X';
 
-    public Game() {
-        board = new Board();
 
+    public Game(int size) {
+      board = new Board(size);
+
+    }
+    private int getUserSizeBoard() {
+        Scanner scanner = new Scanner(System.in);
+        int size = 0;
+
+        return size;
     }
 
     public void startGame() {
@@ -18,13 +25,14 @@ public class Game {
         while (gameGoing) {
             Move move;
             if (whoseMove == 'X') {
-                move = UserDialogs.getUserMove();
+                System.out.println(board.getSize());
+                move = UserDialogs.getUserMove(board.getSize());
 
             } else {
-                move = AI.getComputerMove();
+                move = AI.getComputerMove(board.getSize());
             }
 
-            if (!UserDialogs.areCoordinatesValid(move.getRow(), move.getCol())) {
+            if (!UserDialogs.areCoordinatesValid(move.getRow(), move.getCol(), board.getSize())) {
                 continue;
             }
 
@@ -49,32 +57,69 @@ public class Game {
             }
         }
     }
+
     public boolean checkWin(char player) {
+        int size = board.getSize();
+        int winCondition = (size == 3) ? 3 : 5;
         // w poziomie
-        for (int row = 0; row < 3; row++) {
-            if (board.getField(row, 0) == player && board.getField(row, 1) == player && board.getField(row, 2) == player) {
-                return true;
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col <= size - winCondition; col++) {
+                boolean win = true;
+                for (int k = 0; k < winCondition; k++) {
+                    if (board.getField(row, col +k) != player) {
+                        win = false;
+                        break;
+                    }
+                }
+                if (win) {  return true; }
             }
         }
 
         // w pionie
-        for (int col = 0; col < 3; col++) {
-            if (board.getField(0, col) == player && board.getField(1, col) == player && board.getField(2, col) == player) {
-                return true;
+        for (int col = 0; col < size; col++) {
+            for (int row = 0; row <= size - winCondition; row++) {
+                boolean win = true;
+                for (int k = 0; k < winCondition; k++) {
+                    if (board.getField(row + k, col) != player) {
+                        win = false;
+                        break;
+                    }
+                }
+                if (win) { return true; }
             }
         }
 
+
         // po skosie
-        if (board.getField(0, 0) == player && board.getField(1, 1) == player && board.getField(2, 2) == player) {
-            return true;
+        for (int row = 0; row <= size - winCondition; row++) {
+            for (int col = 0; col <= size - winCondition; col++) {
+                boolean win = true;
+                for (int k = 0; k < winCondition; k++) {
+                    if (board.getField(row + k, col + k) != player) {
+                        win = false;
+                        break;
+                    }
+                }
+                if (win) return true;
+            }
         }
 
-        if (board.getField(0, 2) == player && board.getField(1, 1) == player && board.getField(2, 0) == player) {
-            return true;
+        for (int row = 0; row <= size - winCondition; row++) {
+            for (int col = winCondition - 1; col < size; col++) {
+                boolean win = true;
+                for (int k = 0; k < winCondition; k++) {
+                    if (board.getField(row + k, col - k) != player) {
+                        win = false;
+                        break;
+                    }
+                }
+                if (win) return true;
+            }
         }
 
         return false;
     }
+
     private void switchPlayer() {
         whoseMove = (whoseMove == 'X' ? 'O' : 'X');
     }
